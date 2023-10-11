@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Teacher>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Teachers</h3>
+        <div class="d-flex justify-content-end mb-1">
+            <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Teachers">Add New</a>
+        </div>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Salary</th>
+                    <th>Position</th>
+                    <th>IsReadyToPrivateCoaching</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td><img src="~/Pictures/@p.Picture" class="rounded-circle" style="width:40px;" /></td>
+                        <td>@p.TeacherName</td>
+                        <td>@p.ExpectSalary</td>
+                        <td>@p.Role</td>
+                        <td>@p.IsReadyToPrivateCoaching</td>
+                        <td>
+                            <a class="btn btn-success btn-sm" asp-action="Edit" asp-controller="Teachers" asp-route-id="@p.TeacherId">Edit</a>
+                            <button data-pk="@p.TeacherId" type="button" class="btn btn-danger btn-sm del">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts
+    {
+    <script src="~/libs/jquery/jquery.js"></script>
+    <script>
+        $(".del").click(function () {
+            if (!confirm('Are you sure to delete?')) return;
+            var btn = $(this);
+            let id = $(this).data("pk");
+            $.ajax({
+                type: "post",
+                url: "/Teachers/Delete/" + id,
+                dataType: "json",
+                success: r => {
+                    if (r.success == true) {
+                        btn.closest("tr").remove();
+                    }
+                }
+            })
+        })
+    </script>
+}
+
